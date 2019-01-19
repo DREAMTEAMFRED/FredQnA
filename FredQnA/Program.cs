@@ -26,7 +26,7 @@ namespace FredQnA
                 ("applicationException/json"));
 
             // grab 20 vids
-            HttpResponseMessage response = await client.GetAsync("https://api.wolframalpha.com/v1/result?i=" + search + "&appid=" + appKey);
+            HttpResponseMessage response = await client.GetAsync($"https://api.wolframalpha.com/v1/result?i= {search}&appid={appKey}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -59,7 +59,7 @@ namespace FredQnA
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue
                 ("applicationException/json"));
 
-            HttpResponseMessage response = await client.GetAsync("http://api.duckduckgo.com/?q=" + question + "&format=json");
+            HttpResponseMessage response = await client.GetAsync($"http://api.duckduckgo.com/?q= {question} &format=json");
 
             if (response.IsSuccessStatusCode)
             {
@@ -74,13 +74,13 @@ namespace FredQnA
                 {
                     string addStr = answer[0].Split('.')[0];
                     wolframText += "\n" + addStr;
-                    Console.WriteLine(addStr);
+                    Console.WriteLine(wolframText);
                 }
                 else
                 {
                     if (texts.Count == 0)
                     {
-                        string data = ""; //this is so that if the search field is empty it does not show what was last searched
+                        //string data = ""; //this is so that if the search field is empty it does not show what was last searched
                         Console.WriteLine(wolframText);
                     }
                     else

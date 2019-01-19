@@ -9,7 +9,7 @@ namespace FredQnA
     class Program
     {
         public static HttpClient client = new HttpClient();
-        static string appKey = Environment.GetEnvironmentVariable("Wofram_App_Key", EnvironmentVariableTarget.User);
+        static string appKey = Environment.GetEnvironmentVariable("Wolfram_App_Key", EnvironmentVariableTarget.User);
         static string wolframText = "";
       
         static void Main(string[] args)

@@ -8,11 +8,13 @@ namespace SpeechToTextApp
 {
     class ProgramSTT
     {
-        public static async Task RecognizeSpeechAsync()
+        public static string speech = "";
+
+        public async Task RecognizeSpeechAsync()
         {
             // Creates an instance of a speech config with specified subscription key and service region.
             // Replace with your own subscription key // and service region (e.g., "westus").
-            var config = SpeechConfig.FromSubscription("de48ef5b15d34f6498fbd831f5d72aec", "westus");
+            var config = SpeechConfig.FromSubscription(Environment.GetEnvironmentVariable("azure_STT_Key", EnvironmentVariableTarget.User), "westus");
 
             // Creates a speech recognizer.
             using (var recognizer = new SpeechRecognizer(config))
@@ -27,7 +29,8 @@ namespace SpeechToTextApp
                 // Checks result.
                 if (result.Reason == ResultReason.RecognizedSpeech)
                 {
-                    Console.WriteLine($"We recognized: {result.Text}");
+                    speech = result.Text;
+                    //Console.WriteLine($"We recognized: {result.Text}");
                 }
                 else if (result.Reason == ResultReason.NoMatch)
                 {
@@ -48,11 +51,11 @@ namespace SpeechToTextApp
             }
         }
 
-        static void Main()
+        /*static void Main()
         {
             RecognizeSpeechAsync().Wait();
             Console.WriteLine("Please press a key to continue.");
             Console.ReadLine();
-        }
+        }*/
     }
 }

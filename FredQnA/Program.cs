@@ -1,8 +1,10 @@
 ﻿using MovieMarvel;
+using SpeechToTextApp;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TextToSPeechApp;
 
 namespace FredQnA
 {
@@ -11,12 +13,27 @@ namespace FredQnA
         public static HttpClient client = new HttpClient();
         static string appKey = Environment.GetEnvironmentVariable("Wolfram_App_Key", EnvironmentVariableTarget.User);
         static string wolframText = "";
-      
+        public static ProgramSTT speech = new ProgramSTT();
+        public static string word = "";
+        public static bool proceed = false;
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter a search:");
-            string search = Console.ReadLine();
-            GetAnswer(search).Wait();
+            while(true)
+            {
+                while (proceed == false)
+                {
+                    speech.RecognizeSpeechAsync().Wait();
+                    word = ProgramSTT.speech;
+                    GetAnswer(word).Wait();
+                }
+
+                //Console.WriteLine("Enter a search:");
+                //string search = Console.ReadLine();
+
+                ProgramTTS.TTSEntry(wolframText);
+                proceed = false;
+            }
         }
 
         public static async Task GetAnswer(string search)
@@ -30,8 +47,9 @@ namespace FredQnA
 
             if (response.IsSuccessStatusCode)
             {
+                proceed = true;
                 string Data = await response.Content.ReadAsStringAsync();
-                wolframText = Data.Split('.')[0];
+                wolframText = Data.Split(". ")[0];
                 //Console.WriteLine(wolframText);
                 if (wolframText.Length < 15)
                 {
@@ -41,13 +59,16 @@ namespace FredQnA
                 {
                     Console.WriteLine(wolframText);
                 }
-                Console.ReadLine();
+                //Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("please rephrase your question");
-                string newSearch = Console.ReadLine();
-                await GetAnswer(newSearch);
+                //Console.WriteLine("please rephrase your question");
+                ProgramTTS.TTSEntry("please rephrase your question");
+                proceed = false;
+                //string newSearch = Console.ReadLine();
+                //speech.RecognizeSpeechAsync().Wait();
+                //await GetAnswer(newSearch);
             }
         }
 

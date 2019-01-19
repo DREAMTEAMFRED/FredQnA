@@ -9,6 +9,7 @@ namespace SpeechToTextApp
     class ProgramSTT
     {
         public static string speech = "";
+        public static bool proceed = false;
 
         public async Task RecognizeSpeechAsync()
         {
@@ -19,35 +20,43 @@ namespace SpeechToTextApp
             // Creates a speech recognizer.
             using (var recognizer = new SpeechRecognizer(config))
             {
-                Console.WriteLine("Say something...");
-
-                // Performs recognition. RecognizeOnceAsync() returns when the first utterance has been recognized,
-                // so it is suitable only for single shot recognition like command or query. For long-running
-                // recognition, use StartContinuousRecognitionAsync() instead.
-                var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
-
-                // Checks result.
-                if (result.Reason == ResultReason.RecognizedSpeech)
+                while(proceed == false)
                 {
-                    speech = result.Text;
-                    //Console.WriteLine($"We recognized: {result.Text}");
-                }
-                else if (result.Reason == ResultReason.NoMatch)
-                {
-                    Console.WriteLine($"NOMATCH: Speech could not be recognized.");
-                }
-                else if (result.Reason == ResultReason.Canceled)
-                {
-                    var cancellation = CancellationDetails.FromResult(result);
-                    Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
+                    Console.WriteLine("Say something...");
 
-                    if (cancellation.Reason == CancellationReason.Error)
+                    // Performs recognition. RecognizeOnceAsync() returns when the first utterance has been recognized,
+                    // so it is suitable only for single shot recognition like command or query. For long-running
+                    // recognition, use StartContinuousRecognitionAsync() instead.
+                    var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
+
+                    // Checks result.
+                    if (result.Reason == ResultReason.RecognizedSpeech)
                     {
-                        Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
-                        Console.WriteLine($"CANCELED: ErrorDetails={cancellation.ErrorDetails}");
-                        Console.WriteLine($"CANCELED: Did you update the subscription info?");
+                        speech = result.Text;
+                        proceed = true;
+                        //Console.WriteLine($"We recognized: {result.Text}");
+                    }
+                    else if (result.Reason == ResultReason.NoMatch)
+                    {
+                        Console.WriteLine($"NOMATCH: Speech could not be recognized.");
+                        proceed = false;
+                    }
+                    else if (result.Reason == ResultReason.Canceled)
+                    {
+                        var cancellation = CancellationDetails.FromResult(result);
+                        Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
+
+                        if (cancellation.Reason == CancellationReason.Error)
+                        {
+                            Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
+                            Console.WriteLine($"CANCELED: ErrorDetails={cancellation.ErrorDetails}");
+                            Console.WriteLine($"CANCELED: Did you update the subscription info?");
+                        }
+
+                        proceed = false;
                     }
                 }
+                proceed = false;
             }
         }
 

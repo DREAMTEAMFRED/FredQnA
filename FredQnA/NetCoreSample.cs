@@ -26,7 +26,7 @@ namespace TextToSPeechApp
 
                     while(player.Playing)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(10);
                     }
                    // if (command == "exit") break;
                 }

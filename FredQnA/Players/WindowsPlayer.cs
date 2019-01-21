@@ -29,7 +29,7 @@ namespace NetCoreAudio.Players
             _playbackTimer.AutoReset = false;
             _playStopwatch = new Stopwatch();
             ExecuteMsiCommand("Close All");
-            ExecuteMsiCommand($"Open "+ fileName);
+            ExecuteMsiCommand($"Open " + "\"" + fileName + "\"");
 			ExecuteMsiCommand("Status "+ fileName + " Length");
 			ExecuteMsiCommand("Play "+ fileName);
             Paused = false;

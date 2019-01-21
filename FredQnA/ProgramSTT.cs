@@ -1,15 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+using FredQnA;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
-
+using TextToSPeechApp;
 
 namespace SpeechToTextApp
 {
     class ProgramSTT
     {
-        public static string speech = "";
+        public static string speech = "*";
+        public static string welcome = "*";
         public static bool proceed = false;
+        public static int noSpeech = 0;
 
         public async Task RecognizeSpeechAsync()
         {
@@ -22,7 +26,10 @@ namespace SpeechToTextApp
             {
                 while(proceed == false)
                 {
-                    Console.WriteLine("Say something...");
+                    if(!Program.proceed)
+                    {
+                        Console.WriteLine("Say something...");
+                    }
 
                     // Performs recognition. RecognizeOnceAsync() returns when the first utterance has been recognized,
                     // so it is suitable only for single shot recognition like command or query. For long-running
@@ -34,12 +41,28 @@ namespace SpeechToTextApp
                     {
                         speech = result.Text;
                         proceed = true;
+                        noSpeech = 0;
                         //Console.WriteLine($"We recognized: {result.Text}");
                     }
                     else if (result.Reason == ResultReason.NoMatch)
                     {
-                        Console.WriteLine($"NOMATCH: Speech could not be recognized.");
-                        proceed = false;
+                        noSpeech++;
+                        if(noSpeech == 3)
+                        {
+                            speech = "*";
+                            welcome = "*";
+                            proceed = true;
+                            Program.proceed = true;
+                        }
+                        else
+                        {
+                            proceed = false;
+                        }
+
+                        if(!Program.proceed)
+                        {
+                            Console.WriteLine($"NOMATCH: Speech could not be recognized.");
+                        }
                     }
                     else if (result.Reason == ResultReason.Canceled)
                     {

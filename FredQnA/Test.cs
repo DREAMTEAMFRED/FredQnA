@@ -14,6 +14,8 @@ namespace TextToSPeechApp
     {
         public static WaveFileReader wave = new WaveFileReader(@"sample.wav");
         public static DirectSoundOut output = null;
+        public static int count = 0;
+
         public async Task TextSpeech(string speech)
         {
             while (true)
@@ -74,8 +76,9 @@ namespace TextToSPeechApp
                             {
                                 //Console.WriteLine("Your speech file is being written to file...");
                                 wave.Close();
-                                using (var fileStream = new FileStream(@"sample.wav", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                using (var fileStream = new FileStream(@"sample" + count + ".wav", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                                 {
+                                    count++;
                                     await dataStream.CopyToAsync(fileStream).ConfigureAwait(false);
                                     ProgramTTS.path = fileStream.Name;
                                     /*if(count > 0)

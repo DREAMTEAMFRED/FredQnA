@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.2.0" />
     <PackageReference Include="NAudio" Version="1.8.5" />
+    <PackageReference Include="System.Json" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

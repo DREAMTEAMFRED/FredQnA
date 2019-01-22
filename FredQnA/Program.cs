@@ -1,4 +1,5 @@
-﻿using MovieMarvel;
+﻿using FredKB;
+using MovieMarvel;
 using NAudio.Wave;
 using SpeechToTextApp;
 using System;
@@ -20,11 +21,10 @@ namespace FredQnA
         public static string access = "*";
         public static bool proceed = true;
         public static bool test = false;
-        public static string hiFred = "hello fred, hi fred, hey friend, hey fred,";
+        public static string hiFred = "hello fred, hi fred, hey fred,";
 
         static void Main(string[] args)
         {
-            
             while (true)
             {
                 while(test == false)
@@ -58,7 +58,16 @@ namespace FredQnA
                         }
                         else
                         {
-                            GetAnswer(word).Wait();
+                            wolframText = ProgramKB.FredKB(word);
+
+                            if(wolframText == "")
+                            {
+                                GetAnswer(word).Wait();
+                            }
+                            else
+                            {
+                                test = true;
+                            }
                         }
                         //test = true;
                     }
@@ -89,7 +98,7 @@ namespace FredQnA
                 string Data = await response.Content.ReadAsStringAsync();
                 wolframText = Data.Split(". ")[0];
                 //Console.WriteLine(wolframText);
-                if (wolframText.Length < 15)
+                if (wolframText.Length < 10)
                 {
                     AskQuestion(search).Wait();
                 }

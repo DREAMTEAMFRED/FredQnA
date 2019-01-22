@@ -81,24 +81,9 @@ namespace TextToSPeechApp
                                     count++;
                                     await dataStream.CopyToAsync(fileStream).ConfigureAwait(false);
                                     ProgramTTS.path = fileStream.Name;
-                                    /*if(count > 0)
-                                    {
-                                        count--;
-                                        File.Create(@"sample" + count + ".wav").Close();
-                                        System.IO.File.Delete(@"sample" + count + ".wav");
-                                    }*/
-
-                                    //count++;
                                 }
-                                //Console.WriteLine("\nYour file is ready. Press any key to exit.");
 
                                 return;
-
-                                //Class1 netcore = new Class1();
-                                //netcore.Audio("C:\\Users\\ogilo\\source\\repos\\TextToSpeech\\sample.wav");
-                                //PlaySound();
-                                //Process.Start("play", @"C:\Users\ogilo\source\repos\TextToSpeech\sample.wav");
-                                //Console.ReadLine();
                             }
                         }
                     }

@@ -14,21 +14,16 @@ namespace TextToSPeechApp
 
              //Console.WriteLine("Welcome to the demo of NetCoreAudio package");
             //ShowFileEntryPrompt();
-            //var fileName = "C:\\Users\\ogilo\\source\\repos\\TextToSpeech\\sample.wav";
             //ShowInstruction();
-            //string command = "play";
 
                 try
-                {
-                    //Console.WriteLine($"Playing {"C:\\Users\\ogilo\\source\\repos\\TextToSpeech\\sample.wav"}");
-                           
+                {                           
                     player.Play(path).Wait();
 
                     while(player.Playing)
                     {
                         Thread.Sleep(10);
                     }
-                   // if (command == "exit") break;
                 }
                 catch (Exception ex)
                 {

@@ -15,7 +15,7 @@ namespace FredKB
             // From Publish Page: HOST
             // Example: https://YOUR-RESOURCE-NAME.azurewebsites.net/qnamaker
             string host = "https://qnafred.azurewebsites.net/qnamaker";
-
+            string kb = Environment.GetEnvironmentVariable("kb_Id", EnvironmentVariableTarget.User);
             // Authorization endpoint key
             // From Publish Page
             string endpoint_key = Environment.GetEnvironmentVariable("azure_KB_key", EnvironmentVariableTarget.User);
@@ -23,7 +23,7 @@ namespace FredKB
             // Management APIs postpend the version to the route
             // From Publish Page, value after POST
             // Example: /knowledgebases/ZZZ15f8c-d01b-4698-a2de-85b0dbf3358c/generateAnswer
-            string route = "/knowledgebases/85e578a7-bf44-4f12-b46e-26efa40b1653/generateAnswer";
+            string route = $"/knowledgebases/{kb}/generateAnswer";
 
             //string quest = Console.ReadLine();
             quest = quest.Replace("'", "");

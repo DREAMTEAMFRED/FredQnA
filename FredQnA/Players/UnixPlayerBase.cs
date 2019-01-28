@@ -11,8 +11,9 @@ namespace NetCoreAudio.Players
 
 		internal const string PauseProcessCommand = "kill -STOP {0}";
 		internal const string ResumeProcessCommand = "kill -CONT {0}";
+        internal const string RecordProcessCommand = "arecord";
 
-		protected virtual string BashToolName { get; }
+        protected virtual string BashToolName { get; }
 
 		public event EventHandler PlaybackFinished;
 

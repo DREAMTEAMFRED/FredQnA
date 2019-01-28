@@ -24,6 +24,7 @@ namespace NetCoreAudio.Players
 
 		public Task Play(string fileName)
         {
+            Stop();
             myFilename = fileName;
             _playbackTimer = new Timer();
             _playbackTimer.AutoReset = false;

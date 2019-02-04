@@ -110,13 +110,9 @@ namespace FredQnA
             }
             else
             {
-                //Console.WriteLine("please rephrase your question");
                 ProgramTTS.TTSEntry("please rephrase your question");
                 test = false;
                 cmd = "Ask";
-                //string newSearch = Console.ReadLine();
-                //speech.RecognizeSpeechAsync().Wait();
-                //await GetAnswer(newSearch);
             }
         }
 

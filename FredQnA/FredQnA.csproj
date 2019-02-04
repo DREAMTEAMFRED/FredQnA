@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ProgramSTT.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="beep2.wav" />
   </ItemGroup>
 

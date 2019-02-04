@@ -12,7 +12,6 @@ namespace SpeechToTextApp
     {
         public static string speech = "*";
         public static string welcome = "*";
-        public static bool proceed = false;
         public static int noSpeech = 0;
 
         public async Task RecognizeSpeechAsync()
@@ -24,70 +23,44 @@ namespace SpeechToTextApp
             // Creates a speech recognizer.
             using (var recognizer = new SpeechRecognizer(config))
             {
-                while(proceed == false)
+
+                Console.WriteLine("Say something...");
+
+                // Performs recognition. RecognizeOnceAsync() returns when the first utterance has been recognized,
+                // so it is suitable only for single shot recognition like command or query. For long-running
+                // recognition, use StartContinuousRecognitionAsync() instead.
+                var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
+
+                // Checks result.
+                if (result.Reason == ResultReason.RecognizedSpeech)
                 {
-                    if(!Program.proceed)
+                    speech = result.Text;
+                    noSpeech = 0;
+                    //Console.WriteLine($"We recognized: {result.Text}");
+                }
+                else if (result.Reason == ResultReason.NoMatch)
+                {
+                    noSpeech++;
+                    if (noSpeech == 3)
                     {
-                        Console.WriteLine("Say something...");
+                        speech = "*";
+                        welcome = "*";
                     }
+                    Console.WriteLine($"NOMATCH: Speech could not be recognized.");
+                }
+                else if (result.Reason == ResultReason.Canceled)
+                {
+                    var cancellation = CancellationDetails.FromResult(result);
+                    Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
 
-                    // Performs recognition. RecognizeOnceAsync() returns when the first utterance has been recognized,
-                    // so it is suitable only for single shot recognition like command or query. For long-running
-                    // recognition, use StartContinuousRecognitionAsync() instead.
-                    var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
-
-                    // Checks result.
-                    if (result.Reason == ResultReason.RecognizedSpeech)
+                    if (cancellation.Reason == CancellationReason.Error)
                     {
-                        speech = result.Text;
-                        proceed = true;
-                        noSpeech = 0;
-                        //Console.WriteLine($"We recognized: {result.Text}");
-                    }
-                    else if (result.Reason == ResultReason.NoMatch)
-                    {
-                        noSpeech++;
-                        if(noSpeech == 3)
-                        {
-                            speech = "*";
-                            welcome = "*";
-                            proceed = true;
-                            Program.proceed = true;
-                        }
-                        else
-                        {
-                            proceed = false;
-                        }
-
-                        if(!Program.proceed)
-                        {
-                            Console.WriteLine($"NOMATCH: Speech could not be recognized.");
-                        }
-                    }
-                    else if (result.Reason == ResultReason.Canceled)
-                    {
-                        var cancellation = CancellationDetails.FromResult(result);
-                        Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
-
-                        if (cancellation.Reason == CancellationReason.Error)
-                        {
-                            Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
-                            Console.WriteLine($"CANCELED: ErrorDetails={cancellation.ErrorDetails}");
-                            Console.WriteLine($"CANCELED: Did you update the subscription info?");
-                        }
-
-                        proceed = false;
+                        Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
+                        Console.WriteLine($"CANCELED: ErrorDetails={cancellation.ErrorDetails}");
+                        Console.WriteLine($"CANCELED: Did you update the subscription info?");
                     }
                 }
-                proceed = false;
             }
         }
-
-        /*static void Main()
-        {
-            RecognizeSpeechAsync().Wait();
-            Console.WriteLine("Please press a key to continue.");
-            Console.ReadLine();
-        }*/
     }
 }

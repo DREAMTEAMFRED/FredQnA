@@ -1,10 +1,8 @@
 ﻿using FredKB;
 using MovieMarvel;
-using NAudio.Wave;
-using SpeechToTextApp;
+using RestSTT;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TextToSPeechApp;
@@ -16,8 +14,9 @@ namespace FredQnA
         public static HttpClient client = new HttpClient();
         static string appKey = Environment.GetEnvironmentVariable("Wolfram_App_Key", EnvironmentVariableTarget.User);
         static string wolframText = "";
-        public static ProgramSTT speech = new ProgramSTT();
+        public static ProgramRestSTT speech = new ProgramRestSTT();
         public static string word = "";
+        public static string cmd = "";
         public static string access = "*";
         public static bool proceed = true;
         public static bool test = false;
@@ -27,59 +26,63 @@ namespace FredQnA
         {
             while (true)
             {
-                while(test == false)
-                {
-                    access = ProgramSTT.speech.ToLower();
-                    if (!hiFred.Contains(access))
-                    {
-                        ProgramSTT.welcome = "hello fred";
-                        speech.RecognizeSpeechAsync().Wait();
-                        access = ProgramSTT.speech.ToLower();
-                        proceed = true;
-                    }
-                    while (hiFred.Contains(access))
-                    {
-                        if(proceed)
-                        {
-                            ProgramTTS.TTSEntry("Hello!");
-                            /*using (var fileStream = new FileStream(@"beep2.wav", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
-                            {
-                                string path = fileStream.Name;
-                                NetCoreSample.Audio(path);
-                            }*/
-                            proceed = false;
-                        }
-                        speech.RecognizeSpeechAsync().Wait();
-                        word = ProgramSTT.speech;
-                        access = word;
-                        if(word.Equals("*"))
-                        {
-                            // do  nothing!
-                        }
-                        else
-                        {
-                            wolframText = ProgramKB.FredKB(word);
+                speech.SpeechToText().Wait();
 
-                            if(wolframText == "")
-                            {
-                                GetAnswer(word).Wait();
-                            }
-                            else
-                            {
-                                test = true;
-                            }
-                        }
-                        //test = true;
-                    }
+                string voice = ProgramRestSTT.text.ToLower();
+
+                if(voice == "nothing recorded")
+                {
+                    cmd = "";
+                }
+                else
+                {
+                    cmd = ProgramKB.FredKB(voice);
                 }
                 
+                cmd = cmd.Replace("\"", "");
+                switch (cmd)
+                {
+                    case "Fred Sees":
+                        // run Fred Sees code
+                        break;
+                    case "Fred Reads":
+                        // run Fred Reads code
+                        break;
+                    case "Light On":
+                        // run Light On code
+                        break;
+                    case "Light Off":
+                        // run Light Off code
+                        break;
+                    case "Ask Question":
+                        FredQnA().Wait();
+                        break;
+                }
+            }
+        }
 
-                //Console.WriteLine("Enter a search:");
-                //string search = Console.ReadLine();
+        public static async Task FredQnA()
+        {
+            Console.WriteLine("Please ask your question");
+            await speech.SpeechToText();
+            string question = ProgramRestSTT.text;
+            if (question.Equals("*"))
+            {
+                // do  nothing!
+            }
+            else
+            {
+                wolframText = ProgramKB.FredKB(question);
 
-                ProgramTTS.TTSEntry(wolframText);
-                test = false;
-                ProgramSTT.speech = "hello fred"; // use a getter and setter!
+                if (wolframText == "")
+                {
+                    await GetAnswer(question);
+                    ProgramTTS.TTSEntry(wolframText);
+                }
+                else
+                {
+                    ProgramTTS.TTSEntry(wolframText);
+                }
             }
         }
 
@@ -113,7 +116,7 @@ namespace FredQnA
                 //Console.WriteLine("please rephrase your question");
                 ProgramTTS.TTSEntry("please rephrase your question");
                 test = false;
-                ProgramSTT.speech = "hello fred";
+                ProgramRestSTT.text = "hello fred";
                 //string newSearch = Console.ReadLine();
                 //speech.RecognizeSpeechAsync().Wait();
                 //await GetAnswer(newSearch);

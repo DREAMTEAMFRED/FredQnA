@@ -17,10 +17,7 @@ namespace FredQnA
         public static ProgramRestSTT speech = new ProgramRestSTT();
         public static string word = "";
         public static string cmd = "";
-        public static string access = "*";
-        public static bool proceed = true;
         public static bool test = false;
-        public static string hiFred = "hello fred, hi fred, hey fred,";
 
         static void Main(string[] args)
         {
@@ -116,7 +113,7 @@ namespace FredQnA
                 //Console.WriteLine("please rephrase your question");
                 ProgramTTS.TTSEntry("please rephrase your question");
                 test = false;
-                ProgramRestSTT.text = "hello fred";
+                cmd = "Ask";
                 //string newSearch = Console.ReadLine();
                 //speech.RecognizeSpeechAsync().Wait();
                 //await GetAnswer(newSearch);

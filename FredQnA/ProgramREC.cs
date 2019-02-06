@@ -12,7 +12,7 @@ namespace RecordAudio
 
         public static async Task Record()
         {
-            Console.WriteLine("recording for only 10secs....");
+            Console.WriteLine("recording for only 3secs....");
             await player.Record();
         }
 

@@ -15,16 +15,8 @@ namespace RestSTT
         public static int noSpeech = 0;
         public async Task SpeechToText()
         {
-            /*if ((args.Length < 2) || (string.IsNullOrWhiteSpace(args[0])))
-            {
-                Console.WriteLine("Arg[0]: Specify the endpoint to hit https://speech.platform.bing.com/recognize");
-                Console.WriteLine("Arg[1]: Specify a valid input wav file.");
-
-                return;
-            }*/
-
             await ProgramREC.Record();
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             await ProgramREC.StopRecording();
 
 
@@ -32,7 +24,7 @@ namespace RestSTT
             // Navigate to the Speech tab and select Bing Speech API. Use the subscription key as Client secret below.
             AuthenticationSTT auth = new AuthenticationSTT(Environment.GetEnvironmentVariable("azure_STT_Key", EnvironmentVariableTarget.User));
 
-            string requestUri = "https://westus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US"; //args[0];/*.Trim(new char[] { '/', '?' });*/
+            string requestUri = "https://westus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US";
 
             string host = @"westus.stt.speech.microsoft.com";
             string contentType = @"audio/wav; codec=""audio/pcm""; samplerate=16000";
@@ -91,14 +83,8 @@ namespace RestSTT
                     trial++;
                 }
                 
-                /*
-                     * Get the response from the service.
-                     */
-                //Console.WriteLine("Response:");
                 using (WebResponse response = request.GetResponse())
                 {
-                    //Console.WriteLine(((HttpWebResponse)response).StatusCode);
-
                     using (StreamReader sr = new StreamReader(response.GetResponseStream()))
                     {
                         responseString = sr.ReadToEnd();
@@ -110,16 +96,13 @@ namespace RestSTT
 
                     Console.WriteLine(texts[0]);
                     text = texts[0];
-                    //Console.ReadLine();
                 }
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.ToString());
-                //Console.WriteLine(ex.Message);
+                ex.ToString();
                 Console.WriteLine("Nothing recorded...");
                 text = "Nothing recorded";
-                //Console.ReadLine();
             }
         }
     }

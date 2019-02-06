@@ -80,7 +80,8 @@ namespace TextToSPeechApp
                                 {
                                     count++;
                                     await dataStream.CopyToAsync(fileStream).ConfigureAwait(false);
-                                    ProgramTTS.path = fileStream.Name;
+                                    string path = fileStream.Name;
+                                    NetCoreSample.Audio(path);
                                 }
 
                                 return;

@@ -9,63 +9,62 @@ using TextToSPeechApp;
 
 namespace FredQnA
 {
-    class Program
+    class ProgramQnA
     {
         public static HttpClient client = new HttpClient();
         static string appKey = Environment.GetEnvironmentVariable("Wolfram_App_Key", EnvironmentVariableTarget.User);
         static string wolframText = "";
         public static ProgramRestSTT speech = new ProgramRestSTT();
+        static ProgramTTS tts = new ProgramTTS();
         public static string word = "";
         public static string cmd = "";
         public static bool test = false;
 
         static void Main(string[] args)
         {
-            while (true)
+            tts.TextSpeech("I am listening...").Wait();
+
+            speech.SpeechToText().Wait();
+
+            string voice = ProgramRestSTT.text.ToLower();
+
+            if(voice == "nothing recorded")
             {
-                speech.SpeechToText().Wait();
-
-                string voice = ProgramRestSTT.text.ToLower();
-
-                if(voice == "nothing recorded")
-                {
-                    cmd = "";
-                }
-                else
-                {
-                    cmd = ProgramKB.FredKB(voice);
-                }
+                cmd = "";
+            }
+            else
+            {
+                cmd = ProgramKB.FredKB(voice);
+            }
                 
-                cmd = cmd.Replace("\"", "");
-                switch (cmd)
-                {
-                    case "Fred Sees":
-                        // run Fred Sees code
-                        break;
-                    case "Fred Reads":
-                        // run Fred Reads code
-                        break;
-                    case "Light On":
-                        // run Light On code
-                        break;
-                    case "Light Off":
-                        // run Light Off code
-                        break;
-                    case "Ask Question":
-                        FredQnA().Wait();
-                        break;
-                }
+            cmd = cmd.Replace("\"", "");
+            switch (cmd)
+            {
+                case "Fred Sees":
+                    // run Fred Sees code
+                    tts.TextSpeech("I see you Mark!").Wait();
+                    break;
+                case "Fred Reads":
+                    // run Fred Reads code
+                    break;
+                case "Light On":
+                    // run Light On code
+                    break;
+                case "Light Off":
+                    // run Light Off code
+                    break;
+                default:
+                    FredQnA().Wait();
+                    break;
             }
         }
 
         public static async Task FredQnA()
         {
-            Console.WriteLine("Please ask your question");
-            await speech.SpeechToText();
             string question = ProgramRestSTT.text;
-            if (question.Equals("*"))
+            if (question.Equals("nothing recorded"))
             {
-                // do  nothing!
+                tts.TextSpeech("I didn't hear a question...").Wait();
             }
             else
             {
@@ -74,11 +73,11 @@ namespace FredQnA
                 if (wolframText == "")
                 {
                     await GetAnswer(question);
-                    ProgramTTS.TTSEntry(wolframText);
+                    tts.TextSpeech(wolframText).Wait();
                 }
                 else
                 {
-                    ProgramTTS.TTSEntry(wolframText);
+                    tts.TextSpeech(wolframText).Wait();
                 }
             }
         }
@@ -94,7 +93,6 @@ namespace FredQnA
 
             if (response.IsSuccessStatusCode)
             {
-                test = true;
                 string Data = await response.Content.ReadAsStringAsync();
                 wolframText = Data.Split(". ")[0];
                 //Console.WriteLine(wolframText);
@@ -110,9 +108,7 @@ namespace FredQnA
             }
             else
             {
-                ProgramTTS.TTSEntry("please rephrase your question");
-                test = false;
-                cmd = "Ask";
+                tts.TextSpeech("please rephrase your question").Wait();
             }
         }
 

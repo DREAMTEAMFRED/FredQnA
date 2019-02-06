@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Remove="ProgramSTT.cs" />
+    <Compile Remove="Test.cs" />
   </ItemGroup>
 
   <ItemGroup>
